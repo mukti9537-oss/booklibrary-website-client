@@ -141,3 +141,25 @@
     @apply font-sans;
   }
 }
+
+/* Banner slider (Swiper.js) — brand-colored bullets in the controls row */
+.banner-pagination {
+  /* Swiper's own CSS positions pagination absolutely; keep it in the flow. */
+  position: static !important;
+}
+.banner-slider {
+  --swiper-pagination-color: #8b5e34;
+  --swiper-pagination-bullet-inactive-color: #8b5e34;
+  --swiper-pagination-bullet-inactive-opacity: 1;
+}
+.banner-pagination .swiper-pagination-bullet {
+  opacity: 0.3;
+  transition:
+    width 0.3s ease,
+    opacity 0.3s ease;
+}
+.banner-pagination .swiper-pagination-bullet-active {
+  width: 1.75rem;
+  border-radius: 9999px;
+  opacity: 1;
+}
