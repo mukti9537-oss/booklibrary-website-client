@@ -1,4 +1,5 @@
-import { Fragment } from "react";
+import { Fragment, Suspense } from "react";
+import Image from "next/image";
 import { BookOpen, Heart, Zap, type LucideIcon } from "lucide-react";
 import BannerSlider from "@/components/BannerSlider";
 
@@ -7,6 +8,49 @@ const FEATURES: { icon: LucideIcon; title: string; desc?: string }[] = [
   { icon: Zap, title: "Instant Access" },
   { icon: Heart, title: "Personalized", desc: "Recommendations" },
 ];
+
+/**
+ * Matches the first slide while the slider streams in. Swiper reads the
+ * current time during its server render, which Next.js's prerender only
+ * tolerates behind a Suspense boundary.
+ */
+function SliderFallback() {
+  return (
+    <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+      <div>
+        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-brand-deep sm:text-sm">
+          <span aria-hidden>✦</span>
+          Read · Learn · Grow
+        </p>
+        <h1 className="mt-5 font-heading text-4xl font-black leading-[1.05] tracking-tight text-ink sm:text-5xl lg:text-6xl xl:text-7xl">
+          Your Personal Book Library
+        </h1>
+        <p className="mt-4 font-heading-italic text-3xl font-semibold text-leaf sm:text-4xl lg:text-[2.75rem] lg:leading-tight">
+          Read Anytime, Anywhere
+        </p>
+        <p className="mt-5 max-w-xl text-base leading-7 text-ink/70 sm:text-lg">
+          Discover thousands of books, from timeless classics to the latest
+          releases. Find your next favorite read!
+        </p>
+        <div className="mt-8">
+          <span className="inline-flex h-12 items-center rounded-full bg-brand px-7 text-base font-semibold text-cream shadow-lg shadow-brand/20">
+            Browse Books
+          </span>
+        </div>
+      </div>
+      <div className="relative h-72 w-full overflow-hidden rounded-[2rem] shadow-2xl shadow-ink/15 ring-8 ring-white/60 sm:h-96 lg:h-[32rem]">
+        <Image
+          src="/images/hero.jpg"
+          alt="A cozy reading corner with books, a warm drink and a plant"
+          fill
+          priority
+          sizes="(min-width: 1024px) 45vw, 100vw"
+          className="object-cover"
+        />
+      </div>
+    </div>
+  );
+}
 
 export default function Banner() {
   return (
@@ -20,7 +64,9 @@ export default function Banner() {
 
       {/* Slider (3 slides, Swiper.js) */}
       <div className="mx-auto w-full max-w-7xl px-4 pt-12 sm:px-6 lg:px-8 lg:pt-16">
-        <BannerSlider />
+        <Suspense fallback={<SliderFallback />}>
+          <BannerSlider />
+        </Suspense>
       </div>
 
       {/* Feature strip */}
