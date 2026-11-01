@@ -62,6 +62,7 @@ function AuthButtons({
   return (
     <div className={cn("flex items-center gap-2.5", className)}>
       <Button
+        nativeButton={false}
         render={<Link href="/login" />}
         variant="outline"
         onClick={onNavigate}
@@ -69,7 +70,9 @@ function AuthButtons({
       >
         Login
       </Button>
+
       <Button
+        nativeButton={false}
         render={<Link href="/register" />}
         onClick={onNavigate}
         className="rounded-full bg-brand px-5 text-[0.9rem] font-semibold text-cream shadow-sm hover:bg-brand-deep"
