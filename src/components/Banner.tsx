@@ -38,7 +38,7 @@ function SliderFallback() {
           </span>
         </div>
       </div>
-      <div className="relative h-72 w-full overflow-hidden rounded-[2rem] shadow-2xl shadow-ink/15 ring-8 ring-white/60 sm:h-96 lg:h-[32rem]">
+      <div className="relative h-72 w-full overflow-hidden rounded-[2rem] shadow-2xl shadow-ink/15 ring-8 ring-white/60 sm:h-96 lg:h-128">
         <Image
           src="/images/hero.jpg"
           alt="A cozy reading corner with books, a warm drink and a plant"

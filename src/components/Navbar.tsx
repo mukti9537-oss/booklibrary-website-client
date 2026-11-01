@@ -16,7 +16,7 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "All Books", href: "/all-books" },
+  { label: "All Books", href: "/allbooks" },
   { label: "Add Book", href: "/add-book", authOnly: true },
   { label: "My Books", href: "/my-books", authOnly: true },
   { label: "My Borrows", href: "/my-borrows", authOnly: true },

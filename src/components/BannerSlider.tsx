@@ -102,7 +102,7 @@ export default function BannerSlider() {
                 <div className="mt-8 flex flex-wrap items-center gap-5 sm:gap-6">
                   <Button
                     nativeButton={false}
-                    render={<Link href="/all-books" />}
+                    render={<Link href="/allbooks" />}
                     className="group h-12 rounded-full bg-brand px-7 text-base font-semibold text-cream shadow-lg shadow-brand/20 hover:bg-brand-deep"
                   >
                     Browse Books
