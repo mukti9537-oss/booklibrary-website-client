@@ -20,44 +20,46 @@ const AddBookpage = ({
   user?: { name?: string; email?: string };
 }) => {
   const [formData, setFormData] = useState<{
-    title: string;
-    author: string;
+    bookTitle: string;
+    authorName: string;
     category: string;
-    image: File | null;
-    description: string;
+    bookImage: File | null;
+    shortDescription: string;
   }>({
-    title: "",
-    author: "",
+    bookTitle: "",
+    authorName: "",
     category: "",
-    image: null,
-    description: "",
+    bookImage: null,
+    shortDescription: "",
   });
 
   const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    const files = "files" in e.target ? e.target.files : null;
+ const handleChange = (
+  e: React.ChangeEvent<
+    HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+  >
+) => {
+  const { name, value } = e.target;
+  const files = "files" in e.target ? e.target.files : null;
 
-    if (name === "image" && files?.[0]) {
-      const file = files[0];
+  if (name === "bookImage" && files?.[0]) {
+    const file = files[0];
 
-      setFormData((prev) => ({
-        ...prev,
-        image: file,
-      }));
+    setFormData((prev) => ({
+      ...prev,
+      bookImage: file,
+    }));
 
-      setPreview(URL.createObjectURL(file));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
-  };
+    setPreview(URL.createObjectURL(file));
+  } else {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+};
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,7 +68,7 @@ const AddBookpage = ({
       setLoading(true);
 
       // Step 1: Check image
-      if (!formData.image) {
+      if (!formData.bookImage) {
         toast.error("Please select a book image");
         return;
       }
@@ -74,7 +76,7 @@ const AddBookpage = ({
       // Step 2: Prepare image for upload
       const imageData = new FormData();
 
-      imageData.append("image", formData.image);
+      imageData.append("bookImage", formData.bookImage);
 
       // Step 3: Upload image to ImgBB
       const imageResponse = await fetch(
@@ -96,11 +98,11 @@ const AddBookpage = ({
 
       // Step 5: Prepare book data
       const bookData = {
-        title: formData.title,
-        author: formData.author,
+        bookTitle: formData.bookTitle,
+        authorName: formData.authorName,
         category: formData.category,
-        image: imageUrl,
-        description: formData.description,
+        bookImage: imageUrl,
+        shortDescription: formData.shortDescription,
       };
 
       // Step 6: Save book data to MongoDB
@@ -125,11 +127,11 @@ const AddBookpage = ({
 
       // Step 8: Reset form
       setFormData({
-        title: "",
-        author: "",
+        bookTitle: "",
+        authorName: "",
         category: "",
-        image: null,
-        description: "",
+        bookImage: null,
+        shortDescription: "",
       });
 
       setPreview("");
@@ -195,8 +197,8 @@ const AddBookpage = ({
 
                   <input
                     type="text"
-                    name="title"
-                    value={formData.title}
+                    name="bookTitle"
+                    value={formData.bookTitle}
                     onChange={handleChange}
                     placeholder="Enter book title"
                     required
@@ -214,8 +216,8 @@ const AddBookpage = ({
 
                   <input
                     type="text"
-                    name="author"
-                    value={formData.author}
+                    name="authorName"
+                    value={formData.authorName}
                     onChange={handleChange}
                     placeholder="Enter author name"
                     required
@@ -257,10 +259,10 @@ const AddBookpage = ({
 
                   <input
                     type="file"
-                    name="image"
+                    name="bookImage"
                     accept="image/*"
                     onChange={handleChange}
-                    required
+                  
                     className="w-full cursor-pointer rounded-xl border border-[#e6d2b8] bg-[#fffaf3] text-sm text-[#80674e] file:mr-3 file:cursor-pointer file:border-0 file:bg-[#ead8c0] file:px-3 file:py-3 file:text-[#432b1d] hover:file:bg-[#dfc6a5]"
                   />
 
@@ -291,8 +293,8 @@ const AddBookpage = ({
                   </label>
 
                   <textarea
-                    name="description"
-                    value={formData.description}
+                    name="shortDescription"
+                    value={formData.shortDescription}
                     onChange={handleChange}
                     placeholder="Write a short description about the book..."
                     rows={3}
