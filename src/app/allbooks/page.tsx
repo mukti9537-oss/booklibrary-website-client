@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
 
 interface Book {
@@ -332,11 +333,13 @@ const AllBookspage = () => {
 
                                                 </span>
 
-                                                <button className="whitespace-nowrap rounded-full border border-[#925b2e] px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-[#70431f] transition-all duration-300 hover:bg-[#925b2e] hover:text-white">
+                                                <Link
+                                                href={`/allbooks/${book._id}`}
+                                                className="whitespace-nowrap rounded-full border border-[#925b2e] px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-[#70431f] transition-all duration-300 hover:bg-[#925b2e] hover:text-white">
 
                                                     View Details →
 
-                                                </button>
+                                                </Link>
 
                                             </div>
 

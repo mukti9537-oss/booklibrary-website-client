@@ -26,7 +26,7 @@ export default function HomeSections() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("http://localhost:8000/allbooks")
+        fetch("http://localhost:8000/homebooks")
             .then((res) => res.json())
             .then((data) => {
                 setBooks(data);
@@ -107,7 +107,7 @@ export default function HomeSections() {
                                     </span>
 
                                     <Link
-                                        href={`/book-details/${book._id}`}
+                                        href={`/allbooks/${book._id}`}
                                         className="mt-4 block rounded-lg bg-[#95602f] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#75451f]"
                                     >
                                         View Details →
