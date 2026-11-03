@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
@@ -14,6 +14,8 @@ const AuthButtons = () => {
     const { data: session, isPending } = authClient.useSession();
 
     const [openDropdown, setOpenDropdown] = useState(false);
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleLogout = async () => {
 
@@ -80,13 +82,20 @@ const AuthButtons = () => {
                 className="flex items-center gap-2"
             >
 
-                <Image
-                    width={20}
-                    height={30}
-                    src={user.image || "/default-avatar.png"}
-                    alt="User"
-                    className="h-10 w-10 rounded-full border-2 border-[#a46b36] object-cover"
-                />
+                {avatarPreview || user.image ? (
+                    <Image
+                        width={36}
+                        height={36}
+                        src={avatarPreview || user.image!}
+                        alt={user.name || "User"}
+                        unoptimized
+                        className="size-9 rounded-full border border-brand/30 object-cover"
+                    />
+                ) : (
+                    <div className="grid size-9 place-items-center rounded-full bg-brand text-white font-bold">
+                        {user.name?.charAt(0).toUpperCase()}
+                    </div>
+                )}
 
                 <span className="text-sm font-semibold">
                     ▼
@@ -111,6 +120,27 @@ const AuthButtons = () => {
                         </p>
 
                     </div>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        className="hidden"
+                        onChange={(e) => {
+                            const file = e.target.files?.[0];
+
+                            if (file) {
+                                setAvatarPreview(URL.createObjectURL(file));
+                            }
+                        }}
+                    />
+
+                    <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="w-full rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-brand/10"
+                    >
+                        Change Profile Picture
+                    </button>
 
 
                     <Link

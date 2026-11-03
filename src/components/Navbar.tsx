@@ -1,15 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
-import { BookOpen, Menu, X, ChevronDown } from "lucide-react";
-import { toast } from "react-toastify";
+import { useRef, useState } from "react";
 
+import {
+    BookOpen,
+    Menu,
+    X,
+    ChevronDown,
+} from "lucide-react";
+
+import { toast } from "react-toastify";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 
 type NavItem = {
     label: string;
@@ -25,7 +31,7 @@ const NAV_ITEMS: NavItem[] = [
     { label: "My Borrows", href: "/my-borrows", authOnly: true },
 ];
 
-
+// Navigation Links
 function NavLinks({
     className,
     onNavigate,
@@ -33,48 +39,40 @@ function NavLinks({
     className?: string;
     onNavigate?: () => void;
 }) {
-
     const pathname = usePathname();
-
     const { data: session } = authClient.useSession();
 
     return (
         <ul className={cn("flex items-center gap-7", className)}>
+            {NAV_ITEMS.filter(
+                (item) => !item.authOnly || !!session
+            ).map((item) => {
+                const isActive = pathname === item.href;
 
-            {NAV_ITEMS
-                .filter((item) => !item.authOnly || !!session)
-                .map((item) => {
-
-                    const isActive = pathname === item.href;
-
-                    return (
-                        <li key={item.href}>
-
-                            <Link
-                                href={item.href}
-                                onClick={onNavigate}
-                                aria-current={isActive ? "page" : undefined}
-                                className={cn(
-                                    "relative block py-1 text-[0.95rem] font-medium text-ink/70 transition-colors hover:text-brand",
-                                    "after:absolute after:-bottom-0.5 after:left-0 after:h-0.5 after:w-full after:origin-left after:bg-brand after:transition-transform after:content-['']",
-                                    isActive
-                                        ? "text-ink after:scale-x-100"
-                                        : "after:scale-x-0 hover:after:scale-x-100"
-                                )}
-                            >
-                                {item.label}
-                            </Link>
-
-                        </li>
-                    );
-
-                })}
-
+                return (
+                    <li key={item.href}>
+                        <Link
+                            href={item.href}
+                            onClick={onNavigate}
+                            aria-current={isActive ? "page" : undefined}
+                            className={cn(
+                                "relative block py-1 text-[0.95rem] font-medium text-ink/70 transition-colors hover:text-brand",
+                                "after:absolute after:-bottom-0.5 after:left-0 after:h-0.5 after:w-full after:origin-left after:bg-brand after:transition-transform after:content-['']",
+                                isActive
+                                    ? "text-ink after:scale-x-100"
+                                    : "after:scale-x-0 hover:after:scale-x-100"
+                            )}
+                        >
+                            {item.label}
+                        </Link>
+                    </li>
+                );
+            })}
         </ul>
     );
 }
 
-
+// Authentication Buttons
 function AuthButtons({
     className,
     onNavigate,
@@ -82,17 +80,18 @@ function AuthButtons({
     className?: string;
     onNavigate?: () => void;
 }) {
-
     const router = useRouter();
 
     const [openDropdown, setOpenDropdown] = useState(false);
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const { data: session, isPending } = authClient.useSession();
 
+    // Logout
     const handleLogout = async () => {
-
         try {
-
             const result = await authClient.signOut();
 
             if (result.error) {
@@ -107,29 +106,18 @@ function AuthButtons({
 
             router.push("/");
             router.refresh();
-
         } catch (error) {
-
             console.error(error);
             toast.error("Something went wrong!");
-
         }
-
     };
 
-
-    if (isPending) {
-        return null;
-    }
-
+    if (isPending) return null;
 
     // Logged Out
-
     if (!session) {
-
         return (
             <div className={cn("flex items-center gap-2.5", className)}>
-
                 <Button
                     variant="outline"
                     className="rounded-full border-brand/30 text-ink hover:bg-brand/10"
@@ -150,34 +138,58 @@ function AuthButtons({
                 >
                     Register
                 </Button>
-
             </div>
         );
     }
 
-
     // Logged In
-
     const user = session.user;
 
-    return (
+    const avatarSrc =
+        avatarPreview || user.image?.trim() || null;
 
+    // Select Profile Picture
+    const handleAvatarChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const file = e.target.files?.[0];
+
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            toast.error("Please select a valid image!");
+            return;
+        }
+
+        const previewUrl = URL.createObjectURL(file);
+
+        setAvatarPreview(previewUrl);
+    };
+
+    return (
         <div className={cn("relative flex items-center", className)}>
 
+            {/* Profile Button */}
             <button
                 type="button"
                 onClick={() => setOpenDropdown(!openDropdown)}
                 className="flex items-center gap-2 rounded-full border border-brand/20 p-1.5 transition hover:bg-brand/10"
                 aria-expanded={openDropdown}
             >
-
-                <Image
-                    width={20}
-                    height={20}
-                    src={user.image || "/default-avatar.png"}
-                    alt={user.name || "User"}
-                    className="size-9 rounded-full border border-brand/30 object-cover"
-                />
+                {avatarSrc ? (
+                    <Image
+                        width={36}
+                        height={36}
+                        src={avatarSrc}
+                        alt={user.name || "User"}
+                        unoptimized
+                        className="size-9 rounded-full border border-brand/30 object-cover"
+                    />
+                ) : (
+                    <div className="grid size-9 place-items-center rounded-full bg-brand font-bold text-white">
+                        {user.name?.charAt(0).toUpperCase()}
+                    </div>
+                )}
 
                 <ChevronDown
                     className={cn(
@@ -185,18 +197,14 @@ function AuthButtons({
                         openDropdown && "rotate-180"
                     )}
                 />
-
             </button>
 
-
             {/* User Dropdown */}
-
             {openDropdown && (
-
                 <div className="absolute right-0 top-12 z-60 w-56 rounded-xl border border-ink/10 bg-cream p-3 shadow-xl">
 
+                    {/* User Information */}
                     <div className="border-b border-ink/10 px-2 pb-3">
-
                         <p className="truncate font-semibold text-ink">
                             {user.name}
                         </p>
@@ -204,22 +212,38 @@ function AuthButtons({
                         <p className="truncate text-xs text-ink/60">
                             {user.email}
                         </p>
-
                     </div>
 
+                    {/* Image Upload */}
+                    <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        className="hidden"
+                        onChange={handleAvatarChange}
+                    />
 
+                    <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="w-full rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-brand/10"
+                    >
+                        Change Profile Picture
+                    </button>
+
+                    {/* My Profile */}
                     <Link
                         href="/profile"
                         onClick={() => {
                             setOpenDropdown(false);
                             onNavigate?.();
                         }}
-                        className="mt-2 block rounded-lg px-3 py-2 text-sm text-ink transition hover:bg-brand/10"
+                        className="mt-1 block rounded-lg px-3 py-2 text-sm text-ink transition hover:bg-brand/10"
                     >
                         My Profile
                     </Link>
 
-
+                    {/* Logout */}
                     <button
                         type="button"
                         onClick={handleLogout}
@@ -227,60 +251,50 @@ function AuthButtons({
                     >
                         Logout
                     </button>
-
                 </div>
-
             )}
-
         </div>
     );
 }
 
-
+// Main Navbar
 export default function Navbar() {
-
     const [menuOpen, setMenuOpen] = useState(false);
 
     const closeMenu = () => setMenuOpen(false);
 
     return (
-
         <header className="sticky top-0 z-50 border-b border-ink/10 bg-cream/95 backdrop-blur supports-backdrop-filter:bg-cream/80">
 
             <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-4 px-4 sm:px-6 lg:h-20 lg:gap-6 lg:px-8">
 
-
-                {/* Logo + Wordmark */}
-
-                <Link href="/" className="flex shrink-0 items-center gap-2.5">
-
-                    <BookOpen className="size-8 text-brand" strokeWidth={1.8} />
+                {/* Logo */}
+                <Link
+                    href="/"
+                    className="flex shrink-0 items-center gap-2.5"
+                >
+                    <BookOpen
+                        className="size-8 text-brand"
+                        strokeWidth={1.8}
+                    />
 
                     <span className="font-heading text-2xl font-bold tracking-tight text-ink lg:text-[1.7rem]">
                         BookNook
                     </span>
-
                 </Link>
-
 
                 <span
                     aria-hidden
                     className="hidden h-7 w-px bg-ink/15 lg:block"
                 />
 
-
                 {/* Desktop Navigation */}
-
                 <NavLinks className="hidden lg:flex" />
 
-
-                {/* Desktop Auth */}
-
+                {/* Desktop Authentication */}
                 <AuthButtons className="ml-auto hidden lg:flex" />
 
-
-                {/* Mobile Menu Toggle */}
-
+                {/* Mobile Menu Button */}
                 <button
                     type="button"
                     onClick={() => setMenuOpen((open) => !open)}
@@ -288,21 +302,16 @@ export default function Navbar() {
                     aria-expanded={menuOpen}
                     className="ml-auto grid size-10 place-items-center rounded-full text-ink transition-colors hover:bg-ink/5 lg:hidden"
                 >
-
-                    {menuOpen
-                        ? <X className="size-5" />
-                        : <Menu className="size-5" />
-                    }
-
+                    {menuOpen ? (
+                        <X className="size-5" />
+                    ) : (
+                        <Menu className="size-5" />
+                    )}
                 </button>
-
             </div>
 
-
             {/* Mobile / Tablet Menu */}
-
             {menuOpen && (
-
                 <div className="border-t border-ink/10 bg-cream lg:hidden">
 
                     <nav className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6">
@@ -321,14 +330,9 @@ export default function Navbar() {
                             className="w-full *:flex-1"
                             onNavigate={closeMenu}
                         />
-
                     </nav>
-
                 </div>
-
             )}
-
         </header>
     );
 }
-

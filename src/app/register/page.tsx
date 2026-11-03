@@ -218,8 +218,8 @@ const Registerpage = () => {
                             </label>
 
                             <input
-                                type="url"
-                                name="url"
+                                type="file"
+                                name="file"
                                 placeholder="Enter photo URL (e.g. https://...)"
                                 className="w-full rounded-xl border border-[#f2dfc1] bg-transparent px-4 py-2.5 text-sm outline-none transition placeholder:text-[#a18e78] focus:border-[#a46b36] focus:ring-2 focus:ring-[#a46b36]/10"
                             />
