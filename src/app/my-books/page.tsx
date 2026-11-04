@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import EditMyBookDialog from "@/components/EditMyBookDialog";
+import DeleteMyBookDialog from "@/components/DeleteMyBookDialog";
 
 interface Book {
     _id: string;
@@ -152,12 +153,7 @@ const MyBooksPage = () => {
                                         onUpdate={refreshBooks}
                                         />
 
-                                    <button
-
-                                        className="flex-1 rounded-full bg-amber-900  font-semibold text-white transition hover:bg-red-700"
-                                    >
-                                        🗑️ Delete
-                                    </button>
+                                    <DeleteMyBookDialog id={book._id} />
 
                                 </div>
 
