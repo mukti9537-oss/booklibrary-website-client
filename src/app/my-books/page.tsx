@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
+import EditMyBookDialog from "@/components/EditMyBookDialog";
 
 interface Book {
     _id: string;
@@ -11,31 +12,44 @@ interface Book {
     bookImage: string;
     shortDescription: string;
 }
-
 const MyBooksPage = () => {
 
     const [books, setBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState(true);
 
     // Fetch Books
+    const fetchBooks = useCallback(async (): Promise<Book[]> => {
+        try {
+            const res = await fetch("http://localhost:8000/allbooks");
+            const data = await res.json();
+            return data;
+        } catch (error) {
+            console.log("Failed to fetch books", error);
+            return [];
+        } finally {
+        }
+    }, []);
+
     useEffect(() => {
-        const fetchBooks = async () => {
-            try {
-                const res = await fetch("http://localhost:8000/allbooks");
+        let isActive = true;
 
-                const data = await res.json();
-
+        const loadBooks = async () => {
+            const data = await fetchBooks();
+            if (isActive) {
                 setBooks(data);
-
-            } catch (error) {
-                console.log("Failed to fetch books", error);
-            } finally {
                 setLoading(false);
             }
         };
 
-        fetchBooks();
-    }, []);
+        void loadBooks();
+        return () => {
+            isActive = false;
+        };
+    }, [fetchBooks]);
+
+    const refreshBooks = useCallback(async () => {
+        setBooks(await fetchBooks());
+    }, [fetchBooks]);
 
     if (loading) {
         return <p className="py-20 text-center">Loading books...</p>;
@@ -133,15 +147,14 @@ const MyBooksPage = () => {
                                 {/* Edit & Delete Buttons */}
                                 <div className="mt-6 flex gap-3">
 
-                                    <button
-                                        className="flex-1 rounded-full border border-[#925b2e] py-2.5 font-semibold text-[#925b2e] transition hover:bg-[#925b2e] hover:text-white"
-                                    >
-                                        ✏️ Edit
-                                    </button>
+                                    <EditMyBookDialog
+                                        book={book}
+                                        onUpdate={refreshBooks}
+                                        />
 
                                     <button
-                                        
-                                        className="flex-1 rounded-full bg-amber-900 py-2.5 font-semibold text-white transition hover:bg-red-700"
+
+                                        className="flex-1 rounded-full bg-amber-900  font-semibold text-white transition hover:bg-red-700"
                                     >
                                         🗑️ Delete
                                     </button>
