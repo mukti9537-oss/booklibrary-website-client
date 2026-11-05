@@ -25,10 +25,10 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
     { label: "Home", href: "/" },
-    { label: "All Books", href: "/allbooks", authOnly: true },
-    { label: "Add Book", href: "/add-book", authOnly: true },
-    { label: "My Books", href: "/my-books", authOnly: true },
-    { label: "My Borrows", href: "/my-borrows", authOnly: true },
+    { label: "All Books", href: "/allbooks", authOnly: false },
+    { label: "Add Book", href: "/add-book", authOnly: false },
+    { label: "My Books", href: "/my-books", authOnly: false },
+    { label: "My Borrows", href: "/my-borrows", authOnly: false },
 ];
 
 // Navigation Links
@@ -40,13 +40,10 @@ function NavLinks({
     onNavigate?: () => void;
 }) {
     const pathname = usePathname();
-    const { data: session } = authClient.useSession();
 
     return (
         <ul className={cn("flex items-center gap-7", className)}>
-            {NAV_ITEMS.filter(
-                (item) => !item.authOnly || !!session
-            ).map((item) => {
+            {NAV_ITEMS.map((item) => {
                 const isActive = pathname === item.href;
 
                 return (

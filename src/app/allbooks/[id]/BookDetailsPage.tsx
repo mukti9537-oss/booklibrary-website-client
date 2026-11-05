@@ -1,3 +1,4 @@
+import BorrowCard from '@/components/Borrow/BorrowCard';
 import Image from 'next/image';
 import React from 'react';
 
@@ -108,12 +109,8 @@ const AllBooksDetailspage = async ({ id }: { id: string }) => {
                     </div>
 
                     {/* Borrow Button */}
-                    <button className="flex w-full max-w-md items-center justify-center gap-4 rounded-full bg-[#a3652e] px-8 py-5 text-lg font-bold text-white shadow-lg transition duration-300 hover:bg-[#824b20] hover:shadow-xl">
-                        <span className="text-2xl">♧</span>
-                        Borrow This Book
-                        <span className="text-2xl">→</span>
-                    </button>
 
+                    <BorrowCard data = {data}/>
                 </div>
             </div>
         </div>
