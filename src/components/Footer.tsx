@@ -73,10 +73,6 @@ const SOCIALS = [
   { name: "Instagram", href: "#", Icon: InstagramIcon },
 ];
 
-/* ------------------------------------------------------------------ *
- * Decorative art (mirrors the reference's hand-drawn books + foliage) *
- * ------------------------------------------------------------------ */
-
 const STACK_LEAVES = [
   { x: 48, y: 78, r: -25 },
   { x: 42, y: 118, r: 160 },

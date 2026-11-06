@@ -26,7 +26,7 @@ export default function HomeSections() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("http://localhost:8000/homebooks")
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/homebooks`)
             .then((res) => res.json())
             .then((data) => {
                 setBooks(data);

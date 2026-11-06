@@ -108,7 +108,7 @@ const AddBookpage = ({
       };
 
       // Step 6: Save book data to MongoDB
-      const res = await fetch("http://localhost:8000/addbook", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/addbook`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

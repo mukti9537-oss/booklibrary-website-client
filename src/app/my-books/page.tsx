@@ -21,7 +21,7 @@ const MyBooksPage = () => {
     // Fetch Books
     const fetchBooks = useCallback(async (): Promise<Book[]> => {
         try {
-            const res = await fetch("http://localhost:8000/allbooks");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/allbooks`);
             const data = await res.json();
             return data;
         } catch (error) {

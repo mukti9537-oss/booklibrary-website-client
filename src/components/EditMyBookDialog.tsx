@@ -87,7 +87,8 @@ const EditMyBookDialog = ({
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const { _id, ...updateData } = formData;
+        const { bookTitle, authorName, category, bookImage, shortDescription } = formData;
+        const updateData = { bookTitle, authorName, category, bookImage, shortDescription };
         const token = await getTokenFromClient()
 
         try {
@@ -118,7 +119,7 @@ const EditMyBookDialog = ({
             }
 
             // Save book data to MongoDB
-            const res = await fetch(`http://localhost:8000/addbook/${book._id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/addbook/${book._id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

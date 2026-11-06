@@ -19,7 +19,7 @@ const DeleteMyBookDialog = ({ id }: { id: string }) => {
     const handleDeleteAddBook = async () => {
         const token = await getTokenFromClient()
 
-        const res = await fetch(`http://localhost:8000/addbook/${id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/addbook/${id}`, {
             method: "DELETE",
             headers: {
                 authorization: `Bearer ${token}`

@@ -77,7 +77,7 @@ const MyBorrowPage = () => {
         try {
             setReturningId(id);
 
-            const res = await fetch(`http://localhost:8000/my-borrows/${id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-borrows/${id}`, {
                 method: "DELETE",
                 credentials: "include",
             });

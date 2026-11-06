@@ -1,7 +1,5 @@
 import BorrowCard from '@/components/Borrow/BorrowCard';
 import Image from 'next/image';
-import { headers } from 'next/headers';
-import { auth } from '@/lib/auth';
 import React from 'react';
 import { getTokenFromServer } from '@/lib/getTokenFromServer';
 
@@ -9,7 +7,7 @@ const AllBooksDetailspage = async ({ id }: { id: string }) => {
 
   const token = await getTokenFromServer();
   
-    const res = await fetch(`http://localhost:8000/allbooks/${id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/allbooks/${id}`, {
         headers: {
             authorization: `Bearer ${token}`
         },

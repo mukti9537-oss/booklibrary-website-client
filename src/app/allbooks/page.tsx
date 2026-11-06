@@ -27,7 +27,7 @@ const AllBookspage = () => {
 
         const fetchBooks = async () => {
             try {
-                const res = await fetch("http://localhost:8000/allbooks");
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/allbooks`);
 
                 if (!res.ok) {
                     throw new Error("Failed to fetch books");

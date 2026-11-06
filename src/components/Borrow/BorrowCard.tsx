@@ -44,7 +44,7 @@ const BorrowCard = ({
         try {
             setLoading(true);
 
-            const response = await fetch("http://localhost:8000/borrowbook", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/borrowbook`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
