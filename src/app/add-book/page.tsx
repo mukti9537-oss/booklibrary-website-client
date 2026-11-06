@@ -13,6 +13,7 @@ import {
   FaArrowRight,
 } from "react-icons/fa";
 import Image from "next/image";
+import { getTokenFromClient } from "@/lib/getTokenFromCilent";
 
 const AddBookpage = ({
   user = {},
@@ -63,7 +64,8 @@ const AddBookpage = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+   const token = await getTokenFromClient()
+ 
     try {
       setLoading(true);
 
@@ -110,6 +112,7 @@ const AddBookpage = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${token}`
         },
         body: JSON.stringify(bookData),
       });

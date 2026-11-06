@@ -21,6 +21,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import { getTokenFromClient } from "@/lib/getTokenFromCilent";
 
 const EditMyBookDialog = ({
     user = {},
@@ -87,6 +88,7 @@ const EditMyBookDialog = ({
         e.preventDefault();
 
         const { _id, ...updateData } = formData;
+        const token = await getTokenFromClient()
 
         try {
             setLoading(true);
@@ -120,6 +122,7 @@ const EditMyBookDialog = ({
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
+                    authorization :  `Bearer ${token}`
                 },
                 body: JSON.stringify({ ...updateData, bookImage: imageUrl }),
             });

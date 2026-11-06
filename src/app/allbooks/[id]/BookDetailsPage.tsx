@@ -1,10 +1,19 @@
 import BorrowCard from '@/components/Borrow/BorrowCard';
 import Image from 'next/image';
+import { headers } from 'next/headers';
+import { auth } from '@/lib/auth';
 import React from 'react';
+import { getTokenFromServer } from '@/lib/getTokenFromServer';
 
 const AllBooksDetailspage = async ({ id }: { id: string }) => {
 
-    const res = await fetch(`http://localhost:8000/allbooks/${id}`);
+  const token = await getTokenFromServer();
+  
+    const res = await fetch(`http://localhost:8000/allbooks/${id}`, {
+        headers: {
+            authorization: `Bearer ${token}`
+        },
+    });
     const data = await res.json();
 
     console.log(data);

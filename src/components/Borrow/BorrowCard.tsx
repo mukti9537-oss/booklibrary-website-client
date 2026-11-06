@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 const BorrowCard = ({
     data,
@@ -65,11 +66,11 @@ const BorrowCard = ({
                 throw new Error(result.message || "Failed to borrow book");
             }
 
-            alert("Book borrowed successfully!");
+            toast.success("Book borrowed successfully!");
             setIsOpen(false);
 
         } catch (error) {
-            alert(error instanceof Error ? error.message : "Failed to borrow book");
+            toast.error(error instanceof Error ? error.message : "Failed to borrow book");
         } finally {
             setLoading(false);
         }

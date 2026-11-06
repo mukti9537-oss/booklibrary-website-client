@@ -10,14 +10,20 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { getTokenFromClient } from "@/lib/getTokenFromCilent";
 import { useRouter } from "next/navigation";
 
 const DeleteMyBookDialog = ({ id }: { id: string }) => {
     const router = useRouter();
 
     const handleDeleteAddBook = async () => {
+        const token = await getTokenFromClient()
+
         const res = await fetch(`http://localhost:8000/addbook/${id}`, {
             method: "DELETE",
+            headers: {
+                authorization: `Bearer ${token}`
+            }
         });
 
         if (res.ok) {
